@@ -92,7 +92,7 @@ int main(){
 
 // Get Shellcode Address
 
-LPVOID ShellcodeAddress = GetShellCodeAddress()
+LPVOID ShellcodeAddress = GetShellCodeAddress();
 
 // Write your injection technique here
 // And use ShellcodeAddress as your shellcode pointer
