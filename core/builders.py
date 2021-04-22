@@ -125,7 +125,7 @@ def build_golang_xor_ipv4(domain, prefix, time, output_path, key, arch):
     # GOOS=windows GOARCH=386 GO111MODULE=off go build .
     pass
 
-def build_golang_base64_txt(domain, prefix, time, output_path, arch):
+def build_golang_base64_txt(domain, prefix, time, output_path, arch, key):
     # GOOS=windows GOARCH=amd64 GO111MODULE=off go build .
     # GOOS=windows GOARCH=386 GO111MODULE=off go build .
 
@@ -143,6 +143,7 @@ def build_golang_base64_txt(domain, prefix, time, output_path, arch):
     code = template_data.replace("{DOMAIN}", domain)
     code = code.replace("{PREFIX}", prefix)
     code = code.replace("{SLEEP}", time)
+    code = code.replace("{KEY}", key)
 
     # Close file after edit
     fi.close()
