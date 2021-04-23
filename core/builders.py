@@ -99,7 +99,7 @@ def build_golang_xor_ipv6(domain, prefix, time, output_path, key, arch):
             else:
                 print_error("Error while generating the agent")
         else:
-            print_error("mingw compiler is not installed")
+            print_error("Golang is not installed")
 
         # clean up temp code
         # os.system("rm -rf tmp")
@@ -114,16 +114,11 @@ def build_golang_xor_ipv6(domain, prefix, time, output_path, key, arch):
             else:
                 print_error("Error while generating the agent")
         else:
-            print_error("mingw compiler is not installed")
+            print_error("Golang is not installed")
         # clean up temp code
         os.system("rm -rf tmp")
 
 
-
-def build_golang_xor_ipv4(domain, prefix, time, output_path, key, arch):
-    # GOOS=windows GOARCH=amd64 GO111MODULE=off go build .
-    # GOOS=windows GOARCH=386 GO111MODULE=off go build .
-    pass
 
 def build_golang_base64_txt(domain, prefix, time, output_path, arch, key):
     # GOOS=windows GOARCH=amd64 GO111MODULE=off go build .
@@ -143,7 +138,6 @@ def build_golang_base64_txt(domain, prefix, time, output_path, arch, key):
     code = template_data.replace("{DOMAIN}", domain)
     code = code.replace("{PREFIX}", prefix)
     code = code.replace("{SLEEP}", time)
-    code = code.replace("{KEY}", key)
 
     # Close file after edit
     fi.close()
@@ -168,7 +162,7 @@ def build_golang_base64_txt(domain, prefix, time, output_path, arch, key):
             else:
                 print_error("Error while generating the agent")
         else:
-            print_error("golang is not installed")
+            print_error("Golang is not installed")
 
         # clean up temp code
         # os.system("rm -rf tmp")
@@ -183,7 +177,7 @@ def build_golang_base64_txt(domain, prefix, time, output_path, arch, key):
             else:
                 print_error("Error while generating the agent")
         else:
-            print_error("golang compiler is not installed")
+            print_error("Golang is not installed")
         # clean up temp code
         os.system("rm -rf tmp")
 
