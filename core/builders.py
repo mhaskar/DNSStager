@@ -138,6 +138,7 @@ def build_golang_base64_txt(domain, prefix, time, output_path, arch, key):
     code = template_data.replace("{DOMAIN}", domain)
     code = code.replace("{PREFIX}", prefix)
     code = code.replace("{SLEEP}", time)
+    code = code.replace("{KEY}", time)
 
     # Close file after edit
     fi.close()
