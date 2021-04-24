@@ -78,7 +78,12 @@ def encode_shellcode_base64(shellcode):
 
 
 def convert_string_key_to_int(key):
-    return int(key.replace("0x", ""))
+    try:
+        return int(key.replace("0x", ""))
+    except Exception as e:
+        print_error("Key is invalid!")
+        print_error(e)
+        exit()
 
 
 def check_root():
