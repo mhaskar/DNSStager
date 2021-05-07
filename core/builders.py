@@ -35,23 +35,27 @@ def build_c_xor_ipv6(domain, prefix, time, output_path, key, arch):
                 print_success("Agent generated successfully to %s" % output_path)
             else:
                 print_error("Error while generating the agent")
+                exit()
         else:
             print_error("mingw compiler is not installed")
+            exit()
 
         # clean up temp code
         os.system("rm ctemptemplate.c")
 
     elif arch == "x86":
         # i686-w64-mingw32-gcc
-        if os.system("which i686-w64-mingw32-gcc") == 0:
+        if os.system("which x86_64-w64-mingw32-gcc") == 0:
             # Compile the code and save it to output path
-            compile_command = "i686-w64-mingw32-gcc ctemptemplate.c -w -o %s -ldnsapi" % output_path
+            compile_command = "i686-w64-mingw32-gcc -m32 ctemptemplate.c -w -o %s -ldnsapi" % output_path
             if os.system(compile_command) == 0:
                 print_success("Agent generated successfully to %s" % output_path)
             else:
                 print_error("Error while generating the agent")
+                exit()
         else:
             print_error("mingw compiler is not installed")
+            exit()
         # clean up temp code
         os.system("rm ctemptemplate.c")
 
@@ -90,7 +94,6 @@ def build_golang_xor_ipv6(domain, prefix, time, output_path, key, arch):
     fi2.close()
 
     if arch == "x64":
-        # Check if we have mingw installed
         if os.system("which go") == 0:
             # Compile the code and save it to output path
             compile_command = "cd tmp && GOOS=windows GOARCH=amd64 GO111MODULE=off go build -o %s ." % output_path
@@ -98,23 +101,26 @@ def build_golang_xor_ipv6(domain, prefix, time, output_path, key, arch):
                 print_success("Agent generated successfully to %s" % output_path)
             else:
                 print_error("Error while generating the agent")
+                exit()
         else:
             print_error("Golang is not installed")
+            exit()
 
         # clean up temp code
         # os.system("rm -rf tmp")
 
     elif arch == "x86":
-        # i686-w64-mingw32-gcc
-        if os.system("go") == 0:
+        if os.system("which go") == 0:
             # Compile the code and save it to output path
             compile_command = "cd tmp && GOOS=windows GOARCH=386 GO111MODULE=off go build -o %s ." % output_path
             if os.system(compile_command) == 0:
                 print_success("Agent generated successfully to %s" % output_path)
             else:
                 print_error("Error while generating the agent")
+                exit()
         else:
             print_error("Golang is not installed")
+            exit()
         # clean up temp code
         os.system("rm -rf tmp")
 
@@ -157,28 +163,32 @@ def build_golang_base64_txt(domain, prefix, time, output_path, arch, key):
         # Check if we have mingw installed
         if os.system("which go") == 0:
             # Compile the code and save it to output path
-            compile_command = "cd tmp && GOOS=windows GOARCH=amd64 GO111MODULE=off go build -o %s ." % output_path
+            compile_command = "cd tmp && PATH=$PATH:/usr/local/go/bin;GOPATH=$(go env GOPATH); GOOS=windows GOARCH=amd64 GO111MODULE=off go build -o %s ." % output_path
             if os.system(compile_command) == 0:
                 print_success("Agent generated successfully to %s" % output_path)
             else:
                 print_error("Error while generating the agent")
+                exit()
         else:
             print_error("Golang is not installed")
+            exit()
 
         # clean up temp code
-        # os.system("rm -rf tmp")
+        os.system("rm -rf tmp")
 
     elif arch == "x86":
         # i686-w64-mingw32-gcc
-        if os.system("go") == 0:
+        if os.system("which go") == 0:
             # Compile the code and save it to output path
-            compile_command = "cd tmp && GOOS=windows GOARCH=386 GO111MODULE=off go build -o %s ." % output_path
+            compile_command = "cd tmp && PATH=$PATH:/usr/local/go/bin;GOPATH=$(go env GOPATH); GOOS=windows GOARCH=386 GO386=softfloat GO111MODULE=off go build -o %s ." % output_path
             if os.system(compile_command) == 0:
                 print_success("Agent generated successfully to %s" % output_path)
             else:
                 print_error("Error while generating the agent")
+                exit()
         else:
             print_error("Golang is not installed")
+            exit()
         # clean up temp code
         os.system("rm -rf tmp")
 
