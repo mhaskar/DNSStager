@@ -123,9 +123,9 @@ optional arguments:
 * -- prefix: The prefix you want to use for the subdomain schema
 For example, if your main domain is `fakedns.live` you can specify the prefix as "cdn" so the generate domains will be a a pattern as the following:
 
-- `cdn0.fakedns.live`
-- `cdn1.fakedns.live`
-- `cdnN.fakedns.live`
+  * `cdn0.fakedns.live`
+  * `cdn1.fakedns.live`
+  * `cdnN.fakedns.live`
 
 Where `N` is auto generated number represent the number of chunks of your payload.
 
@@ -170,3 +170,7 @@ And the output will be:
 And to check if everything is working well, lets send DNS query to `cloud-srv-0.test.mydnsserver.live` to get the following:
 
 ![Alt text](screenshots/DNSStager-dig-test.png)
+
+We can see that we received `f642:89ee:fae2:c20a:a0a:4b5b:4b5a:585b` as response which is the first 16 bytes of our encoded payload.
+
+And the agent `/tmp/a2.exe` will do the work for you when you execute it on the target machine.
