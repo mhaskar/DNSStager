@@ -45,13 +45,14 @@ parser.add_argument(
 parser.add_argument(
     '--xorkey',
     required=False,
-    help='XOR key to encode your payload with, only required with xor payloads'
+    help='XOR key to encode your payload with'
 )
 parser.add_argument(
     '--sleep',
     required=False,
     help='sleep for N seconds between each DNS request'
 )
+
 
 args = parser.parse_args()
 payloads = args.payloads
@@ -64,6 +65,7 @@ key = args.xorkey
 sleep = args.sleep
 
 
+
 if payloads:
     show_payloads()
     exit()
@@ -73,6 +75,7 @@ banner()
 if domain is None:
     print_error("Please specify a domain name using --domain")
     exit()
+
 
 if payload is None:
     print_error("Please specify a payload to use using --payload")
@@ -107,6 +110,14 @@ if sleep is None:
     print_info("Choosing sleep time will keep your agent work stealthy and totally OPSEC safe")
     print_info("Use --sleep 0 if you don't want to sleep between requests")
     exit()
+
+if sleep is not None:
+    try:
+        sleep_value = int(args.sleep)
+        sleep = args.sleep
+    except ValueError:
+        print_error("Sleep must be in seconds")
+        exit()
 
 
 if key is None:
@@ -159,13 +170,4 @@ else:
     exit()
 
 
-print_success("Starting DNS server .. ")
-resolver = Resolver(ZONES)
-
-try:
-    server = DNSServer(resolver, port=53, address="0.0.0.0", tcp=False)
-    print_success("Server started!")
-    server.start()
-except Exception as e:
-    print_error("Can't start DNS server!")
-    print_error(e)
+start_dns_server(ZONES)
