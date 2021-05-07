@@ -123,9 +123,9 @@ optional arguments:
 * -- prefix: The prefix you want to use for the subdomain schema
 For example, if your main domain is `fakedns.live` you can specify the prefix as "cdn" so the generate domains will be a a pattern as the following:
 
-`cdn0.fakedns.live`
-`cdn1.fakedns.live`
-`cdnN.fakedns.live`
+- `cdn0.fakedns.live`
+- `cdn1.fakedns.live`
+- `cdnN.fakedns.live`
 
 Where `N` is auto generated number represent the number of chunks of your payload.
 
