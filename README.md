@@ -113,8 +113,46 @@ optional arguments:
   --output OUTPUT       Agent output path
   --shellcode_path SHELLCODE_PATH
                         Shellcode file path
-  --xorkey XORKEY       XOR key to encode your payload with, only required
-                        with xor payloads
+  --xorkey XORKEY       XOR key to encode your payload with
   --sleep SLEEP         sleep for N seconds between each DNS request
 
+```
+
+* --domain: you can use this option to select the main domain you will use to handle the DNS requests for.
+
+* -- prefix: The prefix you want to use for the subdomain schema
+For example, if your main domain is `fakedns.live` you can specify the prefix as "cdn" so the generate domains will be a a pattern as the following:
+
+`cdn0.fakedns.live`
+`cdn1.fakedns.live`
+`cdnN.fakedns.live`
+
+Where `N` is auto generated number represent the number of chunks of your payload.
+
+* --payload: the DNSStager payload "agent" you want to generate based on the technique, programming language and architecture.
+
+* --output: Output path to save DNSStager executable payload "agent".
+
+* --shellcode_path: Your `raw`/`bin` shellcode path.
+
+* --xorkey: XOR key to encode the payload with.
+
+* --sleep: Used to sleep for N seconds between each DNS request.
+
+## DNSStager Payloads
+
+To check the available DNSStager payloads, you can use `./dnsstager.py --payloads` to get the following results:
+
+```
+┌─[askar@hackbook]─[/opt/redteaming/DNSStager]
+└──╼ $sudo ./dnsstager.py --payloads
+
+[+] 6 DNSStager payloads Available
+
+x64/c/ipv6			Resolve your payload as IPV6 addresses xored with custom key via compiled x64 C code
+x86/c/ipv6			Resolve your payload as IPV6 addresses xored with custom key via compiled x86 C code
+x64/golang/txt			Resolve your payload as TXT records encoded using base64 compiled x64 GoLang code
+x64/golang/ipv6			Resolve your payload as IPV6 addresses encoded with custom key using byte add encoding via compiled x64 GoLang code
+x86/golang/txt			Resolve your payload as TXT records encoded using base64 compiled x86 GoLang code
+x86/golang/ipv6			Resolve your payload as IPV6 addresses encoded with custom key using byte add encoding via compiled x86 GoLang code
 ```
