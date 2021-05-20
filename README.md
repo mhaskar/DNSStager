@@ -174,3 +174,7 @@ And to check if everything is working well, lets send DNS query to `cloud-srv-0.
 We can see that we received `f642:89ee:fae2:c20a:a0a:4b5b:4b5a:585b` as response which is the first 16 bytes of our encoded payload.
 
 And the agent `/tmp/a2.exe` will do the work for you when you execute it on the target machine.
+
+# License
+
+This project is licensed under the GPL-3.0 License - see the LICENSE file for details
