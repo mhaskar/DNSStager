@@ -121,7 +121,7 @@ optional arguments:
 * --domain: you can use this option to select the main domain you will use to handle the DNS requests for.
 
 * -- prefix: The prefix you want to use for the subdomain schema
-For example, if your main domain is `fakedns.live` you can specify the prefix as "cdn" for example so the generate domains will be a a pattern as the following:
+For example, if your main domain is `fakedns.live` you can specify the prefix as "cdn" for example, So the generate domains will be a a pattern as the following:
 
   * `cdn0.fakedns.live`
   * `cdn1.fakedns.live`
