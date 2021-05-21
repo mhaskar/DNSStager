@@ -173,7 +173,7 @@ And to check if everything is working well, lets send DNS query to `cloud-srv-0.
 
 We can see that we received `f642:89ee:fae2:c20a:a0a:4b5b:4b5a:585b` as response which is the first 16 bytes of our encoded payload.
 
-Then you can execute the agent `/tmp/a2.exe` (as set in using --output in the comand line) and that will download all of the chunks required, decode them and inject them into memory for you.
+Then you can execute the agent `/tmp/a2.exe` (as set in using --output in the comand line) on the target machine and that will download all of the chunks required, decode them and inject them into memory for you.
 
 # License
 
