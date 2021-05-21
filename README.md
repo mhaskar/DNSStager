@@ -1,8 +1,8 @@
 # What is DNSStager? ![](https://img.shields.io/badge/python-3-blue)
 
-DNSStager is an open-source project based on Python used to hide and transfer your payload using DNS protocol.
+DNSStager is an open-source project based on Python used to hide and transfer your payload using DNS.
 
-DNSStager will create a malicious DNS server that handles DNS requests to your domain and return your payload as a response to specific records such as `AAAA` or `TXT` records after splitting it into chunks and encode the payload using different algorithms.
+DNSStager will create a malicious DNS server that handles DNS requests to your domain and return your payload as a response to specific record requests such as `AAAA` or `TXT` records after splitting it into chunks and encoding the payload using different algorithms.
 
 DNSStager can generate a custom agent written in `C` or `GoLang` that will resolve a sequence of domains, retrieve the payload, decode it and finally inject it into the memory based on any technique you want.
 
@@ -11,11 +11,11 @@ You can edit the code of DNSStager agent as you wish, and build it using your ow
 The main goal of using DNSStager is to help red teamers/pentesters to deliver their payloads in stealthy channel using DNS.
 
 
-# How it works?
+# How does it work?
 
-Based on your DNS resolving option, DNSStager will split your payload into chunks and save each chunk of the payload as a response for a subdomain.
+Based on your DNS resolution option, DNSStager will split your payload into chunks and save each chunk of the payload as a response for a subdomain.
 
-For example, if you choose `IPV6` as an option to retrieve the payload, the DNS response will be like the following:
+For example, if you choose `IPV6` as your option to retrieve the payload, the DNS response will be something like:
 
 `cloud-srv-1.test.mydnsserver.live. 300 IN AAAA	5648:31d2:6548:8b52:6048:8b52:1848:8b52`
 
@@ -23,18 +23,18 @@ Where `5648:31d2:6548:8b52:6048:8b52:1848:8b52` is a part of your payload.
 
 So, the agent will resolve some domains to retrieve the payload and then decode it and finally inject it into memory.
 
-Currently, DNSStager support two records which are `AAAA` and `TXT` only; You can encode your payload using XOR for the `AAAA` record and by default it will be encoded as base64 if you choose `TXT` record.
+Currently, DNSStager only supports two records, `AAAA` and `TXT`. You can encode your payload using XOR for the `AAAA` record and by default it will be encoded as base64 if you choose `TXT` record.
 
 # DNSStager key features:
 
 DNSStager has some key features such as:
 
-* Hide and Resolve your payload as `IPV6` records.
-* Hide and Resolve your payload as `TXT` records.
+* Hide and Resolve your payload in `IPV6` records.
+* Hide and Resolve your payload in `TXT` records.
 * XOR encoder to encode your payload.
 * Base64 encoder to encode your payload (only for TXT records).
-* Pure agent written in `C` with the ability to customaize it.
-* Pure agent written in `GoLang` with the ability to customaize it.
+* Pure agent written in `C` with the ability to customise it.
+* Pure agent written in `GoLang` with the ability to customise it.
 * The ability to use sleep between each DNS request.
 * AND MUCH MORE TO COME!
 
