@@ -79,7 +79,7 @@ def encode_shellcode_base64(shellcode):
 
 def convert_string_key_to_int(key):
     try:
-        return int(key.replace("0x", ""))
+        return int((key.replace("0x", "")), 16)
     except Exception as e:
         print_error("Key is invalid!")
         print_error(e)
