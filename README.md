@@ -90,7 +90,7 @@ After doing all that, you are ready to execute DNSStager **as root** to get the 
 
 To start using DNSStager, make sure to setup your DNS settings first, you need to make your domain points to the DNSStager instance as `NS record` in order to handle all the DNS requests to your domain.
 
-You can read this full article about how to setup and use DNSStager.
+You can read [this full article](https://shells.systems/unveiling-dnsstager-a-tool-to-hide-your-payload-in-dns) about how to setup and use DNSStager.
 
 And you can check the options using `-h` switch like the following:
 
