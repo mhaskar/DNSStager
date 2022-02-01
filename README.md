@@ -70,20 +70,22 @@ And make sure to install all the previously mentioned requirements too.
 After doing all that, you are ready to execute DNSStager **as root** to get the following:
 
 ```
-┌─[askar@hackbook]─[/opt/redteaming/DNSStager]
-└──╼ $sudo ./dnsstager.py
+askar•/opt/redteaming/DNSStager(main⚡)» sudo ./dnsstager.py                                                                                                                 
 
+    
+                                                                                          
+                                                                                          
+██████  ███    ██ ███████ ███████ ████████  █████   ██████  ███████ ██████  
+██   ██ ████   ██ ██      ██         ██    ██   ██ ██       ██      ██   ██ 
+██   ██ ██ ██  ██ ███████ ███████    ██    ███████ ██   ███ █████   ██████  
+██   ██ ██  ██ ██      ██      ██    ██    ██   ██ ██    ██ ██      ██   ██ 
+██████  ██   ████ ███████ ███████    ██    ██   ██  ██████  ███████ ██   ██ 
+                                                                            
+                                                                                                                                                            
+                                                                                              
 
-
-██████╗░███╗░░██╗░██████╗░██████╗████████╗░█████╗░░██████╗░███████╗██████╗░
-██╔══██╗████╗░██║██╔════╝██╔════╝╚══██╔══╝██╔══██╗██╔════╝░██╔════╝██╔══██╗
-██║░░██║██╔██╗██║╚█████╗░╚█████╗░░░░██║░░░███████║██║░░██╗░█████╗░░██████╔╝
-██║░░██║██║╚████║░╚═══██╗░╚═══██╗░░░██║░░░██╔══██║██║░░╚██╗██╔══╝░░██╔══██╗
-██████╔╝██║░╚███║██████╔╝██████╔╝░░░██║░░░██║░░██║╚██████╔╝███████╗██║░░██║
-╚═════╝░╚═╝░░╚══╝╚═════╝░╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝░╚═════╝░╚══════╝╚═╝░░╚═╝    
-
-    Beta Version                           Hide your payload in DNS
-
+    Stable v1.0                           Hide your payload in DNS
+    
 [-] Please specify a domain name using --domain
 ```
 # Usage
@@ -95,12 +97,9 @@ You can read [this full article](https://shells.systems/unveiling-dnsstager-a-to
 And you can check the options using `-h` switch like the following:
 
 ```
-┌─[askar@hackbook]─[/opt/redteaming/DNSStager]
-└──╼ $sudo ./dnsstager.py -h
-usage: dnsstager.py [-h] [--domain DOMAIN] [--payloads] [--prefix PREFIX]
-                    [--payload PAYLOAD] [--output OUTPUT]
-                    [--shellcode_path SHELLCODE_PATH] [--xorkey XORKEY]
-                    [--sleep SLEEP]
+askar•/opt/redteaming/DNSStager(main⚡)» sudo ./dnsstager.py -h                                                                                                         
+usage: dnsstager.py [-h] [--domain DOMAIN] [--payloads] [--prefix PREFIX] [--payload PAYLOAD] [--output OUTPUT] [--shellcode_path SHELLCODE_PATH] [--xorkey XORKEY] [--sleep SLEEP]
+                    [--format FORMAT]
 
 DNSStager main parser
 
@@ -115,7 +114,7 @@ optional arguments:
                         Shellcode file path
   --xorkey XORKEY       XOR key to encode your payload with
   --sleep SLEEP         sleep for N seconds between each DNS request
-
+  --format FORMAT       payload format (.dll or .exe)
 ```
 
 * --domain: you can use this option to select the main domain you will use to handle the DNS requests for.
@@ -144,8 +143,7 @@ Where `N` is auto generated number represent the number of chunks of your payloa
 To check the available DNSStager payloads, you can use `./dnsstager.py --payloads` to get the following results:
 
 ```
-┌─[askar@hackbook]─[/opt/redteaming/DNSStager]
-└──╼ $sudo ./dnsstager.py --payloads
+askar•/opt/redteaming/DNSStager(main⚡)» sudo ./dnsstager.py --payloads                                                                                                
 
 [+] 6 DNSStager payloads Available
 
@@ -174,6 +172,11 @@ And to check if everything is working well, lets send DNS query to `cloud-srv-0.
 We can see that we received `f642:89ee:fae2:c20a:a0a:4b5b:4b5a:585b` as response which is the first 16 bytes of our encoded payload.
 
 Then you can execute the agent `/tmp/a2.exe` (as set in using --output in the comand line) on the target machine and that will download all of the chunks required, decode them and inject them into memory for you.
+
+# Resources
+
+* [DNSStager v1.0 stable: stealthier code, DLL agent & much more](https://shells.systems/?p=2112).
+* [Unveiling DNSStager: A tool to hide your payload in DNS](https://shells.systems/unveiling-dnsstager-a-tool-to-hide-your-payload-in-dns/).
 
 # License
 
