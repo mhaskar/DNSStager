@@ -115,6 +115,7 @@ optional arguments:
   --xorkey XORKEY       XOR key to encode your payload with
   --sleep SLEEP         sleep for N seconds between each DNS request
   --format FORMAT       payload format (.dll or .exe)
+  --tcp                 Start and use the DNS server via TCP protocol
 ```
 
 * --domain: you can use this option to select the main domain you will use to handle the DNS requests for.
@@ -137,6 +138,8 @@ Where `N` is auto generated number represent the number of chunks of your payloa
 * --xorkey: XOR key to encode the payload with.
 
 * --sleep: Used to sleep for N seconds between each DNS request.
+
+* --tcp:               Start and use the DNS server via TCP protocol
 
 ## DNSStager Payloads
 
