@@ -181,15 +181,20 @@ def generate_zone_ipv6(domain, shellcode, prefix):
     return(ZONES)
 
 
-def start_dns_server(ZONES):
+def start_dns_server(ZONES, tcp_status):
     print_info("DNSStager will send %s DNS requests to get the full payload" % len(ZONES))
     print_success("Starting DNS server .. ")
     resolver = Resolver(ZONES)
 
     try:
-        server = DNSServer(resolver, port=53, address="0.0.0.0", tcp=False)
-        print_success("Server started!")
-        server.start()
+        if tcp_status:
+            server = DNSServer(resolver, port=53, address="0.0.0.0", tcp=True)
+            print_success("Server started! over TCP/53!")
+            server.start()
+        else:
+            server = DNSServer(resolver, port=53, address="0.0.0.0", tcp=False)
+            print_success("Server started over UDP/53!")
+            server.start()            
     except Exception as e:
         print_error("Can't start DNS server!")
         print_error(e)

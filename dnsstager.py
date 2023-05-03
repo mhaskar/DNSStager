@@ -57,7 +57,12 @@ parser.add_argument(
     required=False,
     help='payload format (.dll or .exe)',
 )
-
+parser.add_argument(
+    '--tcp',
+    required=False,
+    help='Start and use the DNS server via TCP protocol',
+    action='store_true'
+)
 
 args = parser.parse_args()
 payloads = args.payloads
@@ -69,6 +74,7 @@ output = args.output
 key = args.xorkey
 sleep = args.sleep
 format = args.format
+tcp = args.tcp
 
 
 if format == ".exe":
@@ -138,6 +144,12 @@ if sleep is not None:
         exit()
 
 
+if tcp is None:
+    tcp_status = False
+else:
+    tcp_status = True
+
+
 if key is None:
     key = 0x00
 else:
@@ -201,4 +213,5 @@ else:
     exit()
 
 
-start_dns_server(ZONES)
+
+start_dns_server(ZONES, tcp_status)
